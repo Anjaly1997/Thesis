@@ -6,7 +6,7 @@ import DroneDetails from './components/DroneDetails';
 import './App.css';
 
 function App() {
-  const [selectedDrone, setSelectedDrone] = useState(null); // Track selected drone
+  const [selectedDrone, setSelectedDrone] = useState(null);
 
   return (
     <div style={{ display: 'flex' }}>
@@ -22,13 +22,13 @@ function App() {
 
         {/* Right Side Split into Two Parts */}
         <div style={{ flexGrow: 1, padding: '16px', display: 'flex', flexDirection: 'column' }}>
-          {/* Top Portion: Map */}
-          <div style={{ flexGrow: 1, marginBottom: '16px', borderRadius: '8px', overflow: 'hidden' }}>
+          {/* Top Portion: Larger Map */}
+          <div style={{ flexGrow: 1, borderRadius: '8px', overflow: 'hidden' }}>
             <MapView />
           </div>
 
           {/* Bottom Portion: Detailed View */}
-          <div style={{ height: '40%', backgroundColor: 'background.paper', borderRadius: '8px', padding: '16px' }}>
+          <div style={{ height: '30vh', backgroundColor: 'background.paper', borderRadius: '8px', padding: '16px', marginTop: '16px' }}>
             <DroneDetails drone={selectedDrone} />
           </div>
         </div>
