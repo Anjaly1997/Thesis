@@ -36,3 +36,56 @@
     transform: rotate(360deg);
   }
 }
+
+
+.blinking-card {
+  animation: blink-animation 1.5s infinite; /* Adjust timing if needed */
+  opacity: 0.7;
+}
+
+@keyframes blink-animation {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+
+/* Custom icon classes for different risk levels */
+/* Custom icon classes for different risk levels */
+
+/* Normal risk - Green */
+.icon-green {
+  color: green;
+}
+
+/* Caution risk - Yellow */
+.icon-yellow {
+  color: yellow;
+}
+
+/* Warning risk - Red with blinking effect */
+.icon-red {
+  color: red;
+  animation: blink-animation 1.5s infinite;
+}
+
+/* Blinking keyframes for critical conditions */
+@keyframes blink-animation {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+/* Custom style for the Leaflet tooltips */
+.leaflet-tooltip {
+  background-color: rgba(0, 0, 0, 0.8); /* Darker background */
+  color: white; /* White text color */
+  border-radius: 4px; /* Rounded corners */
+  padding: 2px 6px; /* Smaller padding */
+  font-size: 12px; /* Smaller font size */
+  font-family: 'Roboto', sans-serif; /* Font matching your site */
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2); /* Light shadow */
+}
+
+.leaflet-tooltip-top:before {
+  border-top-color: rgba(0, 0, 0, 0.8); /* Tooltip arrow matching background */
+}
+
