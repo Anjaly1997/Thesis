@@ -41,16 +41,56 @@ const FitBounds = ({ positions }) => {
 const MapView = ({ mapViewData }) => {
   const [mapStyle, setMapStyle] = React.useState("dark-v10");
 
+  // Button styling for theme selection
+  const buttonStyle = {
+    backgroundColor: "#E7E43E",
+    color: "#2D403F",
+    fontFamily: "'Chakra Petch', sans-serif",
+    fontWeight: "bold",
+    border: "none",
+    borderRadius: "6px",
+    padding: "6px 12px",
+    cursor: "pointer",
+  };
+
+  const selectedButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: "#69E77F",
+    color: "#FFFFFF",
+  };
+
   return (
     <>
+      {/* Map Style Buttons */}
       <div style={{ marginBottom: "10px", display: "flex", gap: "8px" }}>
-        <button onClick={() => setMapStyle("dark-v10")}>Dark</button>
-        <button onClick={() => setMapStyle("light-v10")}>Light</button>
-        <button onClick={() => setMapStyle("satellite-streets-v11")}>Satellite</button>
-        <button onClick={() => setMapStyle("streets-v11")}>Streets</button>
+        <button
+          onClick={() => setMapStyle("dark-v10")}
+          style={mapStyle === "dark-v10" ? selectedButtonStyle : buttonStyle}
+        >
+          Dark
+        </button>
+        <button
+          onClick={() => setMapStyle("light-v10")}
+          style={mapStyle === "light-v10" ? selectedButtonStyle : buttonStyle}
+        >
+          Light
+        </button>
+        <button
+          onClick={() => setMapStyle("satellite-streets-v11")}
+          style={mapStyle === "satellite-streets-v11" ? selectedButtonStyle : buttonStyle}
+        >
+          Satellite
+        </button>
+        <button
+          onClick={() => setMapStyle("streets-v11")}
+          style={mapStyle === "streets-v11" ? selectedButtonStyle : buttonStyle}
+        >
+          Streets
+        </button>
       </div>
 
-      <MapContainer center={[52.286867, 10.538144]} zoom={6} style={{ height: "65vh", width: "100%" }}>
+      {/* Map Container */}
+      <MapContainer center={[52.286867, 10.538144]} zoom={6} style={{ height: "65vh", width: "100%", borderRadius: "8px" }}>
         <TileLayer
           url={`https://api.mapbox.com/styles/v1/mapbox/${mapStyle}/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiYW5qYWx5LWNsYXVzdGhhbCIsImEiOiJjbTBrbnJ5YmowdzV4MmpxdzF1MGxrNHMxIn0.HKayHQR7X8J95mNMLfIHvg`}
           attribution='&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a> contributors'
@@ -67,13 +107,23 @@ const MapView = ({ mapViewData }) => {
             icon={getIconByState(aircraft.state || "Normal")}
           >
             <Popup>
-              <strong>{aircraft.callsign || "Unknown"}</strong>
-              <br />
-              Latitude: {aircraft.latitude}
-              <br />
-              Longitude: {aircraft.longitude}
-              <br />
-              Heading: {aircraft.trueHeading || "N/A"}°
+              <div
+                style={{
+                  fontFamily: "'Montserrat', sans-serif",
+                  color: "#2D403F",
+                  fontSize: "14px",
+                }}
+              >
+                <strong style={{ color: "#E7E43E" }}>
+                  {aircraft.callsign || "Unknown"}
+                </strong>
+                <br />
+                Latitude: {aircraft.latitude}
+                <br />
+                Longitude: {aircraft.longitude}
+                <br />
+                Heading: {aircraft.trueHeading || "N/A"}°
+              </div>
             </Popup>
           </Marker>
         ))}

@@ -1,91 +1,51 @@
-.App {
-  text-align: center;
+/* General App Background */
+body, html, #root {
+  background-color: #2D403F;
+  color: #FFFFFF;
+  font-family: 'Montserrat', sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Sidebar Styling */
+.sidebar {
+  background-color: #2D403F;
+  color: #FFFFFF;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* Aircraft List Card */
+.card {
+  background: #2D403F;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  color: #FFFFFF;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.card-title {
+  color: #E7E43E;
+  font-weight: bold;
 }
 
-.App-link {
-  color: #61dafb;
+.card-subtitle {
+  color: rgba(255, 255, 255, 0.8);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* System State Highlight */
+.system-state {
+  color: #69E77F;
+  font-size: 12px;
 }
 
-
-.blinking-card {
-  animation: blink-animation 1.5s infinite; /* Adjust timing if needed */
-  opacity: 0.7;
+/* Hover Effects */
+.card:hover {
+  background-color: rgba(69, 231, 127, 0.1); /* Light Green Hover */
 }
 
-@keyframes blink-animation {
-  0% { opacity: 0.7; }
-  50% { opacity: 1; }
-  100% { opacity: 0.7; }
+/* Drone Details Styling */
+.drone-details {
+  background: #2D403F;
+  color: #FFFFFF;
+  border-radius: 8px;
+  padding: 16px;
 }
-
-/* Custom icon classes for different risk levels */
-/* Custom icon classes for different risk levels */
-
-/* Normal risk - Green */
-.icon-green {
-  color: green;
-}
-
-/* Caution risk - Yellow */
-.icon-yellow {
-  color: yellow;
-}
-
-/* Warning risk - Red with blinking effect */
-.icon-red {
-  color: red;
-  animation: blink-animation 1.5s infinite;
-}
-
-/* Blinking keyframes for critical conditions */
-@keyframes blink-animation {
-  0% { opacity: 0.7; }
-  50% { opacity: 1; }
-  100% { opacity: 0.7; }
-}
-/* Custom style for the Leaflet tooltips */
-.leaflet-tooltip {
-  background-color: rgba(0, 0, 0, 0.8); /* Darker background */
-  color: white; /* White text color */
-  border-radius: 4px; /* Rounded corners */
-  padding: 2px 6px; /* Smaller padding */
-  font-size: 12px; /* Smaller font size */
-  font-family: 'Roboto', sans-serif; /* Font matching your site */
-  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2); /* Light shadow */
-}
-
-.leaflet-tooltip-top:before {
-  border-top-color: rgba(0, 0, 0, 0.8); /* Tooltip arrow matching background */
-}
-
