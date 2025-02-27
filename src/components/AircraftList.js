@@ -6,7 +6,6 @@ import {
   Box,
   Divider,
   TextField,
-  Tooltip,
   InputAdornment,
   MenuItem,
   Select,
@@ -20,32 +19,34 @@ import BatteryChargingFullIcon from "@mui/icons-material/BatteryChargingFull";
 import CloudIcon from "@mui/icons-material/Cloud";
 import PeopleIcon from "@mui/icons-material/People";
 import FenceIcon from "@mui/icons-material/Fence";
-import TrafficIcon from "@mui/icons-material/Traffic"; 
+import TrafficIcon from "@mui/icons-material/Traffic";
 import GpsFixedIcon from "@mui/icons-material/GpsFixed";
 import SensorsIcon from "@mui/icons-material/Sensors";
-import BuildIcon from "@mui/icons-material/Build"; 
+import BuildIcon from "@mui/icons-material/Build";
 import MailIcon from "@mui/icons-material/Mail";
 import AirplanemodeActiveIcon from "@mui/icons-material/AirplanemodeActive";
+import Tooltip from "@mui/material/Tooltip";
 import { systemStates } from "./aircraftData";
 
-// Helper to get icon colors
+// Helper function to get colors for system states
 const getIconColor = (state) => {
   switch (state) {
     case "Warning":
-      return "#E74C3C";
+      return "#E74C3C"; // Red for high risk
     case "Caution":
-      return "#F1C40F";
+      return "#F1C40F"; // Yellow for medium risk
     case "Expected Change":
-      return "#1ABC9C";
+      return "#1ABC9C"; // Cyan for expected state change
     default:
-      return "#95A5A6";
+      return "#95A5A6"; // Gray for normal state
   }
 };
 
 const AircraftList = ({ aircraftData, onSelectDrone }) => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [riskFilter, setRiskFilter] = useState("");
+  const [searchQuery, setSearchQuery] = useState(""); // State for search filter
+  const [riskFilter, setRiskFilter] = useState(""); // State for risk-based filtering
 
+  // Filter and sort aircrafts based on search and risk priority
   const filteredAircrafts = aircraftData
     .filter((aircraft) =>
       aircraft.callsign?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -61,7 +62,7 @@ const AircraftList = ({ aircraftData, onSelectDrone }) => {
 
   return (
     <>
-      {/* Search and Filter */}
+      {/* Search and Filter Section */}
       <Box sx={{ display: "flex", marginBottom: "16px", gap: "8px" }}>
         <TextField
           label="Search"
@@ -130,12 +131,12 @@ const AircraftList = ({ aircraftData, onSelectDrone }) => {
         </FormControl>
       </Box>
 
-      {/* Aircraft Cards with Proper Spacing */}
+      {/* Aircraft List */}
       <Box
         sx={{
           maxHeight: "90vh",
           overflowY: "auto",
-          paddingRight: "12px", // Added spacing from scrollbar
+          paddingRight: "12px", // Padding for scrollbar
           "&::-webkit-scrollbar": {
             width: "10px",
           },
@@ -182,7 +183,12 @@ const AircraftList = ({ aircraftData, onSelectDrone }) => {
                 >
                   {aircraft.callsign || "Unknown"}
                 </Typography>
-                <Divider sx={{ marginY: "8px", borderColor: "rgba(255, 255, 255, 0.2)" }} />
+                <Divider
+                  sx={{
+                    marginY: "8px",
+                    borderColor: "rgba(255, 255, 255, 0.2)",
+                  }}
+                />
                 <Typography
                   variant="body2"
                   sx={{
@@ -193,21 +199,45 @@ const AircraftList = ({ aircraftData, onSelectDrone }) => {
                   System State: {aircraft.state || "Normal"}
                 </Typography>
 
-                {/* Icons */}
+                {/* Aircraft Icons */}
                 <Box display="flex" justifyContent="space-between" sx={{ marginTop: "12px" }}>
-                  <FlightTakeoffIcon fontSize="small" sx={{ color: "white" }} />
-                  <SignalCellularAltIcon fontSize="small" sx={{ color: "white" }} />
-                  <BatteryChargingFullIcon fontSize="small" sx={{ color: "white" }} />
-                  <CloudIcon fontSize="small" sx={{ color: "white" }} />
-                  <PeopleIcon fontSize="small" sx={{ color: "white" }} />
-                  <FenceIcon fontSize="small" sx={{ color: "white" }} />
-                  <TrafficIcon fontSize="small" sx={{ color: "white" }} />
-                  <GpsFixedIcon fontSize="small" sx={{ color: "white" }} />
-                  <SensorsIcon fontSize="small" sx={{ color: "white" }} />
-                  <BuildIcon fontSize="small" sx={{ color: "white" }} />
-                  <MailIcon fontSize="small" sx={{ color: "white" }} />
-                  <AirplanemodeActiveIcon fontSize="small" sx={{ color: "white" }} />
-                </Box>
+  <Tooltip title="Command Conformance">
+    <FlightTakeoffIcon fontSize="small" sx={{ color: "white" }} />
+  </Tooltip>
+  <Tooltip title="Flight Envelope Protection">
+    <SignalCellularAltIcon fontSize="small" sx={{ color: "white" }} />
+  </Tooltip>
+  <Tooltip title="Battery Endurance">
+    <BatteryChargingFullIcon fontSize="small" sx={{ color: "white" }} />
+  </Tooltip>
+  <Tooltip title="Meteorological Conditions">
+    <CloudIcon fontSize="small" sx={{ color: "white" }} />
+  </Tooltip>
+  <Tooltip title="Casualty Risk">
+    <PeopleIcon fontSize="small" sx={{ color: "white" }} />
+  </Tooltip>
+  <Tooltip title="Geo-fence Constraints">
+    <FenceIcon fontSize="small" sx={{ color: "white" }} />
+  </Tooltip>
+  <Tooltip title="Obstacles and Traffic">
+    <TrafficIcon fontSize="small" sx={{ color: "white" }} />
+  </Tooltip>
+  <Tooltip title="Positional Accuracy">
+    <GpsFixedIcon fontSize="small" sx={{ color: "white" }} />
+  </Tooltip>
+  <Tooltip title="Sensor Health">
+    <SensorsIcon fontSize="small" sx={{ color: "white" }} />
+  </Tooltip>
+  <Tooltip title="Motor Health">
+    <BuildIcon fontSize="small" sx={{ color: "white" }} />
+  </Tooltip>
+  <Tooltip title="Data Transfer">
+    <MailIcon fontSize="small" sx={{ color: "white" }} />
+  </Tooltip>
+  <Tooltip title="Airspace Conformance">
+    <AirplanemodeActiveIcon fontSize="small" sx={{ color: "white" }} />
+  </Tooltip>
+</Box>
               </CardContent>
             </Card>
           );

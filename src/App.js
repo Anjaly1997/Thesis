@@ -4,10 +4,11 @@ import MapView from "./components/MapView";
 import Sidebar from "./components/Sidebar";
 import AircraftList from "./components/AircraftList";
 import DroneDetails from "./components/DroneDetails";
+import staticData from "./data/aircraftData.json"; // Static JSON file
 import "./App.css";
 
 function App() {
-  const [aircraftData, setAircraftData] = useState([]); // JSON data for aircraft
+  const [aircraftData, setAircraftData] = useState([]);
   const [selectedDrone, setSelectedDrone] = useState(null); // Currently selected drone for details
 
   useEffect(() => {
@@ -20,15 +21,18 @@ function App() {
 
     simnet.onConnected(() => {
       simnet.subscribe("aircraft", (message) => {
+        console.log("addrModeS:", message.addrModeS);
+
         setAircraftData((prev) => {
+          // Merge RabbitMQ data with static data
           const aircraftMap = prev.reduce((map, aircraft) => {
             map[aircraft.addrModeS] = aircraft;
             return map;
           }, {});
 
-          // Update or add new aircraft while preserving callsign stability
           if (!aircraftMap[message.addrModeS]) {
             aircraftMap[message.addrModeS] = {
+              ...staticData.find((item) => item.addrModeS === message.addrModeS) || {}, // Default from JSON
               ...message,
               callsign: message.callsign || `FLIGHT_${message.addrModeS}`,
             };
@@ -49,7 +53,6 @@ function App() {
   return (
     <div style={{ display: "flex" }}>
       <Sidebar />
-
       <div style={{ display: "flex", flexGrow: 1 }}>
         {/* Aircraft List */}
         <div
@@ -62,6 +65,7 @@ function App() {
           <AircraftList
             aircraftData={aircraftData}
             onSelectDrone={setSelectedDrone}
+            selectedDrone={selectedDrone}
           />
         </div>
 
@@ -81,9 +85,12 @@ function App() {
               overflow: "hidden",
             }}
           >
-            <MapView mapViewData={aircraftData} />
+            <MapView
+              mapViewData={aircraftData}
+              selectedAircraft={selectedDrone} // Highlight selected aircraft on the map
+              onSelectAircraft={setSelectedDrone} // Callback to select aircraft from the map
+            />
           </div>
-
           <div
             style={{
               height: "30vh",
