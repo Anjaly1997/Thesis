@@ -230,7 +230,7 @@ const AircraftList = ({ aircraftData, onSelectDrone }) => {
                 padding: "0px",
                 cursor: "pointer",
                 borderLeft: `6px solid ${borderColor}`,
-                backgroundColor: "rgba(255, 255, 255, 0.06)", // Slight opacity
+                backgroundColor: "rgba(255, 255, 255, 0.06)", 
                 borderRadius: "12px",
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
                 color: "#FFFFFF",

@@ -1,70 +1,81 @@
-# Getting Started with Create React App
+# UAS-HMI React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A research-focused Human-Machine Interface (HMI) prototype for **monitoring unmanned aircraft systems (UAS)** in simulated environments. This application was developed as part of my **master's thesis** at the **German Aerospace Center (DLR)**.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 📚 About the Thesis
 
-### `npm start`
+This app was built for my master's thesis titled:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+> **"Human Machine Interface for future aircraft guidance systems"**
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+The focus is on designing a **modular, flexible, and research-friendly HMI** using modern web technologies. The prototype supports **real-time UAS monitoring**, emphasizing:
 
-### `npm test`
+- Safety risk visibility
+- System state awareness
+- Map-based interaction
+- Fast iteration and usability for non-programmers
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🧰 Tech Stack
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+| Category     | Technology         |
+|--------------|--------------------|
+| UI Framework | React              |
+| UI Library   | Material UI (MUI)  |
+| Map Engine   | Mapbox GL JS       |
+| Icons        | Custom PNG Icons   |
+| Data Format  | JSON               |
+| DOM Engine   | ReactDOM           |
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🗺️ Features
 
-### `npm run eject`
+- Interactive map with **Mapbox GL JS**
+- Custom drone icons based on **system severity**
+- Aircraft list sorted by **risk level**
+- Popups showing aircraft status in real time
+- MUI components for consistent UI styling
+- Modular architecture to enable **fast prototyping**
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🚀 Getting Started
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Prerequisites
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- Node.js (v18 recommended)
+- npm or yarn
+- Mapbox Access Token (get one from https://account.mapbox.com)
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 🔧 Installation
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+git clone https://github.com/Anjaly1991997/uas-hmi-project.git
+cd uas-hmi-project
+npm install
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Run the App
 
-### Analyzing the Bundle Size
+```bash
+npm start
+Visit http://localhost:3000
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+uas-hmi-project/
+├── public/
+├── src/
+│   ├── assets/              # Drone icons
+│   ├── components/          # AircraftList, MapPanel, Sidebar, etc.
+│   ├── data/                # aircraftData.json
+│   ├── App.js               # Root component
+│   └── index.js             # ReactDOM.render
+├── .env
+├── package.json
+└── README.md

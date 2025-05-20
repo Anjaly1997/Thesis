@@ -24,7 +24,7 @@ const DroneDetails = ({ drone }) => {
   return (
     <Card
       sx={{
-        background: "rgba(46, 57, 68, 0.6)", // Glass effect
+        background: "rgba(46, 57, 68, 0.6)", 
         backdropFilter: "blur(10px)",
         color: "#E7E8EA",
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
@@ -38,7 +38,7 @@ const DroneDetails = ({ drone }) => {
           variant="h6"
           sx={{
             fontWeight: "bold",
-            color: "#E7E43E", // Highlight color
+            color: "#E7E43E", 
             fontFamily: "'Chakra Petch', sans-serif",
           }}
         >
