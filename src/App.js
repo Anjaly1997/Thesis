@@ -1,60 +1,36 @@
 import React, { useEffect, useState } from "react";
-import simnet from "./libs/simnet";
 import MapView from "./components/MapView";
 import Sidebar from "./components/Sidebar";
 import AircraftList from "./components/AircraftList";
 import DroneDetails from "./components/DroneDetails";
-import staticData from "./data/aircraftData.json"; // Static JSON file
+import staticData from "./data/aircraftData.json"; // New JSON with lat/lng
 import "./App.css";
 
 function App() {
   const [aircraftData, setAircraftData] = useState([]);
-  const [selectedDrone, setSelectedDrone] = useState(null); // Currently selected drone for details
+  const [selectedDrone, setSelectedDrone] = useState(null);
+  const [activePanel, setActivePanel] = useState("map"); // for Sidebar control
 
   useEffect(() => {
-    simnet.connect({
-      url: "ws://127.0.0.1:15674/ws",
-      user: "guest",
-      pass: "guest",
-      exchange: "/topic/",
-    });
+    // Enrich static data (if lat/lng missing — but your new file has them!)
+    const enriched = staticData.map((item, index) => ({
+      addrModeS: item.addrModeS || `UAS-${index + 1}`,
+      callsign: item.callsign || `UAS-${index + 1}`,
+      state: item.state || "Normal",
+      latitude: item.latitude || 52.3,
+      longitude: item.longitude || 10.5,
+      ...item,
+    }));
 
-    simnet.onConnected(() => {
-      simnet.subscribe("aircraft", (message) => {
-        console.log("addrModeS:", message.addrModeS);
-
-        setAircraftData((prev) => {
-          // Merge RabbitMQ data with static data
-          const aircraftMap = prev.reduce((map, aircraft) => {
-            map[aircraft.addrModeS] = aircraft;
-            return map;
-          }, {});
-
-          if (!aircraftMap[message.addrModeS]) {
-            aircraftMap[message.addrModeS] = {
-              ...staticData.find((item) => item.addrModeS === message.addrModeS) || {}, // Default from JSON
-              ...message,
-              callsign: message.callsign || `FLIGHT_${message.addrModeS}`,
-            };
-          } else {
-            aircraftMap[message.addrModeS] = {
-              ...aircraftMap[message.addrModeS],
-              ...message,
-              callsign: aircraftMap[message.addrModeS].callsign,
-            };
-          }
-
-          return Object.values(aircraftMap);
-        });
-      });
-    });
+    setAircraftData(enriched);
   }, []);
 
   return (
     <div style={{ display: "flex" }}>
-      <Sidebar />
+      <Sidebar onSelectPanel={setActivePanel} />
+
       <div style={{ display: "flex", flexGrow: 1 }}>
-        {/* Aircraft List */}
+        {/* Aircraft List (always shown) */}
         <div
           style={{
             width: "30%",
@@ -69,7 +45,7 @@ function App() {
           />
         </div>
 
-        {/* Map and Drone Details */}
+        {/* Dynamic Right Panel */}
         <div
           style={{
             flexGrow: 1,
@@ -78,29 +54,35 @@ function App() {
             flexDirection: "column",
           }}
         >
-          <div
-            style={{
-              flexGrow: 1,
-              borderRadius: "8px",
-              overflow: "hidden",
-            }}
-          >
-            <MapView
-              mapViewData={aircraftData}
-              selectedAircraft={selectedDrone} // Highlight selected aircraft on the map
-              onSelectAircraft={setSelectedDrone} // Callback to select aircraft from the map
-            />
-          </div>
-          <div
-            style={{
-              height: "30vh",
-              backgroundColor: "background.paper",
-              padding: "16px",
-              marginTop: "16px",
-            }}
-          >
-            <DroneDetails drone={selectedDrone} />
-          </div>
+          {activePanel === "map" && (
+            <>
+              <div style={{ flexGrow: 1, borderRadius: "8px", overflow: "hidden" }}>
+                <MapView
+                  mapViewData={aircraftData}
+                  selectedAircraft={selectedDrone}
+                  onSelectAircraft={setSelectedDrone}
+                />
+              </div>
+              <div
+                style={{
+                  height: "30vh",
+                  backgroundColor: "background.paper",
+                  padding: "16px",
+                  marginTop: "16px",
+                }}
+              >
+                <DroneDetails drone={selectedDrone} />
+              </div>
+            </>
+          )}
+
+          {activePanel === "notifications" && (
+            <div style={{ color: "white" }}>📢 No notifications yet.</div>
+          )}
+
+          {activePanel === "welcome" && (
+            <div style={{ color: "white" }}>👋 Welcome to the HMI dashboard.</div>
+          )}
         </div>
       </div>
     </div>

@@ -11,58 +11,96 @@ import {
   Select,
   InputLabel,
   FormControl,
+  Tooltip,
+  Stack,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import SignalCellularAltIcon from "@mui/icons-material/SignalCellularAlt";
-import BatteryChargingFullIcon from "@mui/icons-material/BatteryChargingFull";
-import CloudIcon from "@mui/icons-material/Cloud";
-import PeopleIcon from "@mui/icons-material/People";
-import FenceIcon from "@mui/icons-material/Fence";
-import TrafficIcon from "@mui/icons-material/Traffic";
-import GpsFixedIcon from "@mui/icons-material/GpsFixed";
-import SensorsIcon from "@mui/icons-material/Sensors";
-import BuildIcon from "@mui/icons-material/Build";
-import MailIcon from "@mui/icons-material/Mail";
-import AirplanemodeActiveIcon from "@mui/icons-material/AirplanemodeActive";
-import Tooltip from "@mui/material/Tooltip";
+import {
+  Flight,
+  BatteryFull,
+  Cloud,
+  Group,
+  GridOn,
+  Warning,
+  Radar,
+  Build,
+  Wifi,
+  Mail,
+  Speed,
+} from "@mui/icons-material";
 import { systemStates } from "./aircraftData";
 
-// Helper function to get colors for system states
-const getIconColor = (state) => {
-  switch (state) {
-    case "Warning":
-      return "#E74C3C"; // Red for high risk
-    case "Caution":
-      return "#F1C40F"; // Yellow for medium risk
-    case "Expected Change":
-      return "#1ABC9C"; // Cyan for expected state change
-    default:
-      return "#95A5A6"; // Gray for normal state
-  }
+// Severity logic
+const severityLevels = {
+  Warning: 3,
+  Caution: 2,
+  Expected: 1,
+  Nominal: 0,
+};
+
+const severityColors = {
+  Warning: "#E74C3C",
+  Caution: "#F1C40F",
+  Expected: "#1ABC9C",
+  Nominal: "#95A5A6",
+};
+
+const getSeverity = (value) => {
+  const val = (value || "").toLowerCase();
+  if (
+    ["critical", "failed", "emergency", "loss", "crossed terminate boundary", "major hazard"].includes(val)
+  ) return "Warning";
+  if (
+    ["warning", "moderate", "nearby hazard", "crossed warning boundary"].includes(val)
+  ) return "Caution";
+  if (
+    ["rerouting", "guided", "expected change"].includes(val)
+  ) return "Expected";
+  return "Nominal";
 };
 
 const AircraftList = ({ aircraftData, onSelectDrone }) => {
-  const [searchQuery, setSearchQuery] = useState(""); // State for search filter
-  const [riskFilter, setRiskFilter] = useState(""); // State for risk-based filtering
+  const [searchQuery, setSearchQuery] = useState("");
+  const [riskFilter, setRiskFilter] = useState("");
 
-  // Filter and sort aircrafts based on search and risk priority
   const filteredAircrafts = aircraftData
+    .map((aircraft) => {
+      const fields = [
+        aircraft.commandConformance ? "Normal" : "Critical",
+        aircraft.flightEnvelopeProtection ? "Normal" : "Critical",
+        aircraft.batteryEndurance,
+        aircraft.meteorologicalStatus,
+        aircraft.casualtyRisk,
+        aircraft.geoFenceStatus,
+        aircraft.obstaclesTrafficStatus,
+        aircraft.sensorHealth,
+        aircraft.motorHealth,
+        aircraft.dataTransfer,
+        aircraft.airspaceConstraints,
+        aircraft.positionalAccuracy,
+      ];
+
+      const maxSeverity = fields.reduce((acc, val) => {
+        const sev = getSeverity(val);
+        return severityLevels[sev] > severityLevels[acc] ? sev : acc;
+      }, "Nominal");
+
+      return { ...aircraft, state: maxSeverity }; // Add calculated state
+    })
     .filter((aircraft) =>
       aircraft.callsign?.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .filter((aircraft) => !riskFilter || aircraft.state === riskFilter)
     .sort((a, b) => {
-      const priorityA =
-        systemStates.find((state) => state.state === a.state)?.priority || 99;
-      const priorityB =
-        systemStates.find((state) => state.state === b.state)?.priority || 99;
-      return priorityA - priorityB;
+      const priorityA = severityLevels[a.state] ?? 99;
+      const priorityB = severityLevels[b.state] ?? 99;
+      return priorityB - priorityA; // Higher risk on top
     });
 
   return (
     <>
-      {/* Search and Filter Section */}
+      {/* Search + Filter */}
       <Box sx={{ display: "flex", marginBottom: "16px", gap: "8px" }}>
         <TextField
           label="Search"
@@ -122,21 +160,21 @@ const AircraftList = ({ aircraftData, onSelectDrone }) => {
             }}
           >
             <MenuItem value="">All</MenuItem>
-            {systemStates.map((state) => (
-              <MenuItem key={state.state} value={state.state}>
-                {state.state}
+            {Object.keys(severityLevels).map((state) => (
+              <MenuItem key={state} value={state}>
+                {state}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
       </Box>
 
-      {/* Aircraft List */}
+      {/* Aircraft Cards */}
       <Box
         sx={{
           maxHeight: "90vh",
           overflowY: "auto",
-          paddingRight: "12px", // Padding for scrollbar
+          paddingRight: "12px",
           "&::-webkit-scrollbar": {
             width: "10px",
           },
@@ -156,24 +194,49 @@ const AircraftList = ({ aircraftData, onSelectDrone }) => {
         }}
       >
         {filteredAircrafts.map((aircraft) => {
-          const iconColor = getIconColor(aircraft.state);
+          const fields = [
+            { icon: <Flight />, label: "Command Conformance", value: aircraft.commandConformance ? "Normal" : "Critical" },
+            { icon: <SignalCellularAltIcon />, label: "Flight Envelope", value: aircraft.flightEnvelopeProtection ? "Normal" : "Critical" },
+            { icon: <BatteryFull />, label: "Battery", value: aircraft.batteryEndurance },
+            { icon: <Cloud />, label: "Weather", value: aircraft.meteorologicalStatus },
+            { icon: <Group />, label: "Casualty Risk", value: aircraft.casualtyRisk },
+            { icon: <GridOn />, label: "Geofence", value: aircraft.geoFenceStatus },
+            { icon: <Warning />, label: "Obstacle Traffic", value: aircraft.obstaclesTrafficStatus },
+            { icon: <Radar />, label: "Sensor Health", value: aircraft.sensorHealth },
+            { icon: <Build />, label: "Motor Health", value: aircraft.motorHealth },
+            { icon: <Wifi />, label: "Data Transfer", value: aircraft.dataTransfer },
+            { icon: <Mail />, label: "Airspace Constraint", value: aircraft.airspaceConstraints },
+            { icon: <Speed />, label: "Positional Accuracy", value: aircraft.positionalAccuracy },
+          ];
+
+          let maxSeverity = aircraft.state;
+          let maxIndex = -1;
+
+          fields.forEach((field, i) => {
+            const sev = getSeverity(field.value);
+            if (sev === maxSeverity && maxIndex === -1) {
+              maxIndex = i;
+            }
+          });
+
+          const borderColor = severityColors[maxSeverity];
 
           return (
             <Card
-              key={aircraft.addrModeS}
+              key={aircraft.callsign}
               onClick={() => onSelectDrone(aircraft)}
               sx={{
-                marginBottom: "16px",
+                marginBottom: "14px",
+                padding: "0px",
                 cursor: "pointer",
-                borderLeft: `6px solid ${iconColor}`,
-                background: "rgba(255, 255, 255, 0.1)",
-                backdropFilter: "blur(10px)",
+                borderLeft: `6px solid ${borderColor}`,
+                backgroundColor: "rgba(255, 255, 255, 0.06)", // Slight opacity
                 borderRadius: "12px",
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
                 color: "#FFFFFF",
               }}
             >
-              <CardContent>
+              <CardContent sx={{ paddingBottom: "10px !important", paddingTop: "10px" }}>
                 <Typography
                   variant="h6"
                   sx={{
@@ -185,7 +248,7 @@ const AircraftList = ({ aircraftData, onSelectDrone }) => {
                 </Typography>
                 <Divider
                   sx={{
-                    marginY: "8px",
+                    marginY: "6px",
                     borderColor: "rgba(255, 255, 255, 0.2)",
                   }}
                 />
@@ -196,48 +259,33 @@ const AircraftList = ({ aircraftData, onSelectDrone }) => {
                     fontFamily: "'Montserrat', sans-serif",
                   }}
                 >
-                  System State: {aircraft.state || "Normal"}
+                  System State: {maxSeverity}
                 </Typography>
 
-                {/* Aircraft Icons */}
-                <Box display="flex" justifyContent="space-between" sx={{ marginTop: "12px" }}>
-  <Tooltip title="Command Conformance">
-    <FlightTakeoffIcon fontSize="small" sx={{ color: "white" }} />
-  </Tooltip>
-  <Tooltip title="Flight Envelope Protection">
-    <SignalCellularAltIcon fontSize="small" sx={{ color: "white" }} />
-  </Tooltip>
-  <Tooltip title="Battery Endurance">
-    <BatteryChargingFullIcon fontSize="small" sx={{ color: "white" }} />
-  </Tooltip>
-  <Tooltip title="Meteorological Conditions">
-    <CloudIcon fontSize="small" sx={{ color: "white" }} />
-  </Tooltip>
-  <Tooltip title="Casualty Risk">
-    <PeopleIcon fontSize="small" sx={{ color: "white" }} />
-  </Tooltip>
-  <Tooltip title="Geo-fence Constraints">
-    <FenceIcon fontSize="small" sx={{ color: "white" }} />
-  </Tooltip>
-  <Tooltip title="Obstacles and Traffic">
-    <TrafficIcon fontSize="small" sx={{ color: "white" }} />
-  </Tooltip>
-  <Tooltip title="Positional Accuracy">
-    <GpsFixedIcon fontSize="small" sx={{ color: "white" }} />
-  </Tooltip>
-  <Tooltip title="Sensor Health">
-    <SensorsIcon fontSize="small" sx={{ color: "white" }} />
-  </Tooltip>
-  <Tooltip title="Motor Health">
-    <BuildIcon fontSize="small" sx={{ color: "white" }} />
-  </Tooltip>
-  <Tooltip title="Data Transfer">
-    <MailIcon fontSize="small" sx={{ color: "white" }} />
-  </Tooltip>
-  <Tooltip title="Airspace Conformance">
-    <AirplanemodeActiveIcon fontSize="small" sx={{ color: "white" }} />
-  </Tooltip>
-</Box>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  sx={{ marginTop: "8px", flexWrap: "wrap" }}
+                >
+                  {fields.map((field, i) => {
+                    const sev = getSeverity(field.value);
+                    const color =
+                      i === maxIndex
+                        ? severityColors[sev]
+                        : severityColors["Nominal"];
+
+                    return (
+                      <Tooltip key={i} title={field.label}>
+                        <Box component="span">
+                          {React.cloneElement(field.icon, {
+                            fontSize: "small",
+                            sx: { color },
+                          })}
+                        </Box>
+                      </Tooltip>
+                    );
+                  })}
+                </Stack>
               </CardContent>
             </Card>
           );

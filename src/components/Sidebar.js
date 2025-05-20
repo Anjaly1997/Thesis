@@ -8,15 +8,20 @@ import {
   Box,
 } from "@mui/material";
 import { styled } from "@mui/system";
-import { Home, Map, Notifications, AirplanemodeActive } from "@mui/icons-material";
-import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff"; // Drone icon
+import {
+  Home,
+  Map,
+  Notifications,
+  AirplanemodeActive,
+} from "@mui/icons-material";
+import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 
 const drawerWidth = 80;
 
-// Styled components for glassmorphism
+// Styled Sidebar (Glassmorphism)
 const GlassSidebar = styled(Box)({
   width: drawerWidth,
-  background: "rgba(46, 57, 68, 0.6)", // Glass effect color
+  background: "rgba(46, 57, 68, 0.6)",
   backdropFilter: "blur(10px)",
   borderRight: "1px solid rgba(255, 255, 255, 0.1)",
   boxShadow: "0 4px 6px rgba(0, 0, 0, 0.4)",
@@ -26,19 +31,17 @@ const GlassSidebar = styled(Box)({
   paddingTop: "12px",
 });
 
-const Sidebar = () => {
-  const selectedPage = "Home"; // Hardcoded for now; can be dynamic later
-
+const Sidebar = ({ onSelectPanel }) => {
   const menuItems = [
-    { icon: <Home />, label: "Home" },
-    { icon: <AirplanemodeActive />, label: "Aircraft" },
-    { icon: <Map />, label: "Map" },
-    { icon: <Notifications />, label: "Notifications" },
+    { icon: <Home />,  label: "Map", panel: "map" },
+    { icon: <AirplanemodeActive />, label: "Aircraft", panel: "map" },
+    { icon: <Map />,label: "Welcome", panel: "welcome" },
+    { icon: <Notifications />, label: "Notifications", panel: "notifications" },
   ];
 
   return (
     <GlassSidebar>
-      {/* Drone Logo */}
+      {/* Drone Icon */}
       <Box
         sx={{
           marginBottom: "32px",
@@ -51,7 +54,7 @@ const Sidebar = () => {
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
         }}
       >
-        <FlightTakeoffIcon sx={{ fontSize: 36, color: "#E6E738" }} /> 
+        <FlightTakeoffIcon sx={{ fontSize: 36, color: "#E6E738" }} />
       </Box>
 
       {/* Menu Items */}
@@ -59,6 +62,7 @@ const Sidebar = () => {
         {menuItems.map((item, index) => (
           <ListItem key={index} disablePadding>
             <ListItemButton
+              onClick={() => onSelectPanel(item.panel)}
               sx={{
                 justifyContent: "center",
                 padding: "12px 0",
@@ -66,17 +70,13 @@ const Sidebar = () => {
                   backgroundColor: "rgba(255, 255, 255, 0.1)",
                   borderRadius: "8px",
                 },
-                ...(selectedPage === item.label && {
-                  backgroundColor: "rgba(255, 255, 255, 0.15)",
-                  borderRadius: "8px",
-                }),
               }}
             >
               <ListItemIcon
                 sx={{
                   minWidth: 0,
-                  color: selectedPage === item.label ? "#E7E8EA" : "#A0B3C0",
-                  fontSize: selectedPage === item.label ? "30px" : "24px", // Slightly larger
+                  color: "#A0B3C0",
+                  fontSize: "24px",
                   display: "flex",
                   justifyContent: "center",
                 }}
